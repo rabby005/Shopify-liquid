@@ -1,0 +1,143 @@
+{% comment %}
+==============================
+Shared Truckload Live (Fully Editable & Customizable)
+- Shopify 2.0 Section
+- Live spot tracking using JS + AJAX
+- All styles, text, colors, sizes editable via theme customizer
+- Backend auto-update via Shopify Flow / Mechanic
+==============================
+{% endcomment %}
+
+<div class="shared-truckload-box" 
+     data-product-id="{{ product.id }}" 
+     style="background: {{ section.settings.bg_color }};">
+
+  <!-- Section Title -->
+  <h3 class="st-title" style="color: {{ section.settings.title_color }}; font-size: {{ section.settings.title_size }}; font-weight: {{ section.settings.title_weight }};">
+    {{ section.settings.title }}
+  </h3>
+
+  <!-- Filled Status -->
+  {% if section.settings.show_status %}
+  <p class="st-status" style="color: {{ section.settings.status_color }}; font-size: {{ section.settings.status_size }};">
+    Loading...
+  </p>
+  {% endif %}
+
+  <!-- Progress Bar -->
+  <div class="st-progress" style="height: {{ section.settings.progress_height }}; background: {{ section.settings.progress_bg }}; border-radius: {{ section.settings.progress_radius }};">
+    <div class="st-progress-fill" style="background: {{ section.settings.progress_fill }}; width:0%;"></div>
+  </div>
+
+  <!-- Remaining Spots -->
+  <p class="st-remaining" style="color: {{ section.settings.remaining_color }}; font-size: {{ section.settings.remaining_size }};">
+    Loading...
+  </p>
+
+  <!-- Join Button -->
+  <button class="st-join-btn" 
+          style="background: {{ section.settings.btn_bg }}; color: {{ section.settings.btn_text }}; padding: {{ section.settings.btn_padding }}; font-size: {{ section.settings.btn_size }}; border-radius: {{ section.settings.btn_radius }};">
+    {{ section.settings.button_text }}
+  </button>
+</div>
+
+<style>
+.shared-truckload-box{
+  border: {{ section.settings.border_width }} solid {{ section.settings.border_color }};
+  padding: {{ section.settings.padding }};
+  border-radius: {{ section.settings.border_radius }};
+  margin-top: {{ section.settings.margin_top }};
+  text-align:center;
+  transition: all 0.3s ease;
+}
+.st-progress-fill{
+  height:100%;
+  display:block;
+  transition:width 0.3s ease;
+}
+.st-join-btn.disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+}
+@media(max-width:768px){
+  .shared-truckload-box{padding:16px;}
+  .st-title{font-size:18px;}
+}
+</style>
+
+<script>
+  const productId = {{ product.id }};
+  const capacity = {{ product.metafields.truck.capacity.value | default: 10 }};
+  const joinBtn = document.querySelector(`.shared-truckload-box[data-product-id="${productId}"] .st-join-btn`);
+  const statusText = document.querySelector(`.shared-truckload-box[data-product-id="${productId}"] .st-status`);
+  const remainingText = document.querySelector(`.shared-truckload-box[data-product-id="${productId}"] .st-remaining`);
+  const progressFill = document.querySelector(`.shared-truckload-box[data-product-id="${productId}"] .st-progress-fill`);
+
+  async function updateTruckload() {
+    try {
+      // Replace with your real endpoint or Storefront API call
+      const res = await fetch(`/products/${productId}.json`);
+      const data = await res.json();
+      const filled = parseInt(data.product.metafields.truck.filled) || 0;
+      const remaining = capacity - filled;
+      const percent = (filled / capacity) * 100;
+
+      // Update UI
+      statusText.innerText = `${filled} / ${capacity} spots filled`;
+      remainingText.innerText = remaining > 0 ? `${remaining} spots remaining` : '{{ section.settings.full_text }}';
+      progressFill.style.width = percent + '%';
+
+      if(remaining <= 0){
+        joinBtn.classList.add('disabled');
+        joinBtn.innerText = '{{ section.settings.full_badge }}';
+      } else {
+        joinBtn.classList.remove('disabled');
+        joinBtn.innerText = '{{ section.settings.button_text }}';
+      }
+
+    } catch(err){
+      console.error('Error fetching truckload data', err);
+    }
+  }
+
+  // Initial fetch
+  updateTruckload();
+  // Poll every 10 seconds
+  setInterval(updateTruckload, 10000);
+</script>
+
+{% schema %}
+{
+  "name": "Shared Truckload Live - Fully Customizable",
+  "settings": [
+    {"type":"text","id":"title","label":"Section Title","default":"Shared Truckload (Collective Buying)"},
+    {"type":"color","id":"title_color","label":"Title Color","default":"#000000"},
+    {"type":"text","id":"title_size","label":"Title Font Size","default":"20px"},
+    {"type":"text","id":"title_weight","label":"Title Font Weight","default":"600"},
+    {"type":"checkbox","id":"show_status","label":"Show filled status","default":true},
+    {"type":"color","id":"status_color","label":"Status Text Color","default":"#555555"},
+    {"type":"text","id":"status_size","label":"Status Font Size","default":"14px"},
+    {"type":"color","id":"bg_color","label":"Background Color","default":"#ffffff"},
+    {"type":"color","id":"progress_bg","label":"Progress Bar Background Color","default":"#eee"},
+    {"type":"color","id":"progress_fill","label":"Progress Bar Fill Color","default":"#000000"},
+    {"type":"text","id":"progress_height","label":"Progress Bar Height","default":"10px"},
+    {"type":"text","id":"progress_radius","label":"Progress Bar Radius","default":"50px"},
+    {"type":"color","id":"remaining_color","label":"Remaining Spots Color","default":"#333333"},
+    {"type":"text","id":"remaining_size","label":"Remaining Font Size","default":"13px"},
+    {"type":"text","id":"button_text","label":"Button Text","default":"Join Group Order"},
+    {"type":"color","id":"btn_bg","label":"Button Background Color","default":"#000000"},
+    {"type":"color","id":"btn_text","label":"Button Text Color","default":"#ffffff"},
+    {"type":"text","id":"btn_padding","label":"Button Padding","default":"10px 22px"},
+    {"type":"text","id":"btn_size","label":"Button Font Size","default":"14px"},
+    {"type":"text","id":"btn_radius","label":"Button Border Radius","default":"25px"},
+    {"type":"text","id":"border_width","label":"Border Width","default":"1px"},
+    {"type":"color","id":"border_color","label":"Border Color","default":"#ddd"},
+    {"type":"text","id":"border_radius","label":"Border Radius","default":"12px"},
+    {"type":"text","id":"padding","label":"Padding","default":"20px"},
+    {"type":"text","id":"margin_top","label":"Margin Top","default":"30px"},
+    {"type":"text","id":"full_text","label":"Full Text","default":"Truckload is full"},
+    {"type":"text","id":"full_badge","label":"Full Badge Text","default":"No spots available"}
+  ],
+  "presets":[{"name":"Shared Truckload Live Editable"}]
+}
+{% endschema %}
