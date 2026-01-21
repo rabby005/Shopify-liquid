@@ -10,8 +10,12 @@
    {{ page.title | lowercase  }}
 
 
-{% comment %} add another word {% endcomment %}
+{% comment %} add another word last  use ( | append: ) {% endcomment %}
  {{ page.title  | append: 'page' }}
+
+
+{% comment %} add other word first use ( | prepend:  ) {% endcomment %}
+ {{ page.title | prepend: 'page' }}
 
 
 {% comment %} 2 word er maje space {% endcomment %}
