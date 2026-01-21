@@ -16,3 +16,7 @@
 
 {% comment %} 2 word er maje space {% endcomment %}
  {{ page.title | append: ' page' }}
+
+
+{% comment %} 1st word upcase and 2nd word lowercase in one line {% endcomment %}
+ {{ page.title | upcase | append: ' page' |lowercase}}
