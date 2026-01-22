@@ -1,15 +1,13 @@
 <style>
-    
+   h1{
+        padding-top:{{ section.settings.padding_top }}rem;
+}
 </style>
 
 
 <div class="page-width">
     <h1> {{ section.settings.Text_header }} </h1>
     <p> {{ section.settings.text_area }} </p>
-
-
-
-    
     {% comment %} <p>{{ section.settings.num_ber }}</p> {% endcomment %}
 
     {% if section.settings.num_ber >0 %}
@@ -40,7 +38,7 @@
             "type": "number",
             "id": "num_ber",
             "label": "Namber",
-             "default":123
+            "default":123
         },
         {
             "type": "range",
