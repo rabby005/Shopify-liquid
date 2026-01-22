@@ -8,7 +8,13 @@
 {% comment %} {{  }} double bracate er bitore jeta show korate chaitesi tar addredd dite hobe ,eikhane address nah dile inputfild show korbe nah  {% endcomment %}
     <h1> {{ section.settings.Text_header }} </h1>
     <p> {{ section.settings.text_area }}</p>
-    <p>{{ section.settings.num_ber }}</p>
+
+
+    {% comment %} ei  2line same kaj korbe ,chaile tag sarao likha jay {% endcomment %}
+    {% comment %} <p>{{ section.settings.num_ber }}</p> {% endcomment %}
+    {{ section.settings.num_ber }}
+
+    
 </div>
 
 
