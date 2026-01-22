@@ -1,0 +1,56 @@
+<style>
+    
+</style>
+
+
+<div class="page-width">
+    <h1> {{ section.settings.Text_header }} </h1>
+    <p> {{ section.settings.text_area }} </p>
+
+
+
+    
+    {% comment %} <p>{{ section.settings.num_ber }}</p> {% endcomment %}
+
+    {% if section.settings.num_ber >0 %}
+      {{ section.settings.num_ber }}
+    {% endif %}
+     
+</div>
+
+{% schema  %} 
+
+{
+    
+    "name": "CHS",
+    
+    "settings": [
+        {
+            "type": "text",
+            "id": "Text_header",
+            "label": "Heading"
+        },
+        {
+            "type": "textarea",
+            "id": "text_area",
+            "label": "Write pragraph",
+            "default":"tall your brand story here"
+        },
+        {
+            "type": "number",
+            "id": "num_ber",
+            "label": "Namber",
+             "default":123
+        }
+    ],
+    
+    "blocks": [],
+
+    "presets": [
+        {
+        "name": "CHS"
+        }
+    ]
+}
+
+{% endschema %}
